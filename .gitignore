@@ -1,0 +1,39 @@
+# Python & Virtual Environment
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.venv_deploy/
+
+# TensorFlow & Large Model Files
+model/*.h5
+model/*.keras
+model/*.pb
+model/variables/
+!model/README.md
+
+# Datasets & Temporary Data
+data/*
+!data/README.md
+!data/sample_images/
+
+# IDE & System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python tooling and local secrets
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.env
+.env.*
+!.env.example
