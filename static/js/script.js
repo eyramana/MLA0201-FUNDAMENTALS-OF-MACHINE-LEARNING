@@ -12,11 +12,17 @@ const cropNames = ["Apple","Blueberry","Cherry","Corn","Grape","Orange","Peach",
 document.querySelector("#crop-grid").innerHTML = cropNames.map(name => `<div class="crop-tile"><span>${cropIcons[name] || "🌿"}</span><b>${name}</b></div>`).join("");
 
 function showError(message) { errorMessage.textContent = message; }
+function openFileChooser() {
+  input.value = "";
+  input.click();
+}
 function handleFile(file) {
   showError("");
   if (!file) return;
   const validTypes = ["image/jpeg", "image/png"];
-  if (!validTypes.includes(file.type) || !/\.(jpe?g|png)$/i.test(file.name)) return showError("Please choose a JPG, JPEG, or PNG image.");
+  const hasValidExtension = /\.(jpe?g|png)$/i.test(file.name);
+  const hasValidType = !file.type || validTypes.includes(file.type);
+  if (!hasValidType || !hasValidExtension) return showError("Please choose a JPG, JPEG, or PNG image.");
   if (file.size > 5 * 1024 * 1024) return showError("That image is larger than the 5 MB limit.");
   selectedFile = file;
   previewImage.src = URL.createObjectURL(file);
@@ -26,8 +32,16 @@ function handleFile(file) {
   analyzeButton.disabled = false;
   document.querySelector("#status-badge").textContent = "Ready to analyze";
 }
-dropZone.addEventListener("click", event => { if (!event.target.closest("button")) input.click(); });
-dropZone.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") input.click(); });
+dropZone.addEventListener("click", event => {
+  if (event.target !== input) openFileChooser();
+});
+dropZone.querySelector("button").addEventListener("click", event => {
+  event.stopPropagation();
+  openFileChooser();
+});
+dropZone.addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") openFileChooser();
+});
 input.addEventListener("change", event => handleFile(event.target.files[0]));
 ["dragenter","dragover"].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.add("dragging"); }));
 ["dragleave","drop"].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.remove("dragging"); }));
